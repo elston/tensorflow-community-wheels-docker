@@ -1,0 +1,21 @@
+version: '2'
+services:
+  trainer:
+    image: ${BASE_PYTHON_IMAGE}
+    network_mode: "host"
+    environment:
+    - PROJECT=${PROJECT}
+    - CONTAINER=${CONTAINER}
+    - WORKON_HOME=/usr/local/lib/${PROJECT}_${CONTAINER}/.env
+    - "PYTHONPATH=\
+      /usr/local/lib:\
+      /usr/local/lib/${PROJECT}_${CONTAINER}"
+    - COMMAND=python -m ${PROJECT}_${CONTAINER}.app
+    - FIXTURE_PATH=/usr/local/lib/${PROJECT}_${CONTAINER}_fixtures      
+    volumes:
+    - ${BASE_DIR}/data/tensorflow_wheel:/tensorflow_wheel
+    - ${BASE_DIR}:/usr/local/lib/${PROJECT}_${CONTAINER}
+    - ${BASE_DIR}/fixtures:/usr/local/lib/${PROJECT}_${CONTAINER}_fixtures
+    - ${BASE_DIR}/compose/runapp.sh:/usr/local/bin/runapp.sh
+    working_dir: /usr/local/lib/${PROJECT}_${CONTAINER}
+    command: /bin/bash

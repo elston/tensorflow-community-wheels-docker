@@ -1,0 +1,16 @@
+version: '2'
+services:
+  trainer:
+    image: ${BASE_PYTHON_IMAGE}
+    network_mode: "host"
+    environment:
+    - PROJECT=${PROJECT}
+    - CONTAINER=${CONTAINER}
+    - WORKON_HOME=/usr/local/lib/${PROJECT}_${CONTAINER}/.env
+    - PYTHONPATH=/usr/local/lib:/usr/local/lib/${PROJECT}_${CONTAINER}
+    - COMMAND=poetry install && pip install --ignore-installed --upgrade /tensorflow_wheel/${TENSORFLOW_VERSION}.whl
+    volumes:
+    - ${BASE_DIR}/data/tensorflow_wheel:/tensorflow_wheel
+    - ${BASE_DIR}:/usr/local/lib/${PROJECT}_${CONTAINER}
+    - ${BASE_DIR}/compose/bootstrap.sh:/usr/local/bin/bootstrap.sh
+    command: bootstrap.sh
